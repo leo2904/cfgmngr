@@ -1,0 +1,13 @@
+path="testdata/config/toml"
+modo="tomler"
+max_conc=666
+#product="HIS-TOML"
+
+[BBDD]
+ConString="oracle/oracle@orcl"
+TimeOut=10
+
+[Extracciones]
+    [Ficheros]
+    ext="unl,txt,kk1"
+    enc="utf-8"
