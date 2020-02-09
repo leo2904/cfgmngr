@@ -1,10 +1,10 @@
 package main
 
 import (
-	"leobcn/packages/cfgmngr"
 	"log"
 
 	"github.com/davecgh/go-spew/spew"
+	"github.com/leo2904/cfgmngr"
 )
 
 type Config struct {
@@ -20,7 +20,7 @@ type Config struct {
 
 func main() {
 	cfg := Config{}
-	if err := cfgmngr.Parse(&cfg, "config.toml"); err != nil {
+	if err := cfgmngr.Parse(&cfg, "cfgmngr.toml"); err != nil {
 		log.Fatal(err)
 	}
 

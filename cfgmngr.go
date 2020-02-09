@@ -12,7 +12,10 @@ import (
 // and merges it with the parameters in the TOML file
 func Parse(cfg interface{}, TOMLFile string) error {
 	if _, err := flags.Parse(cfg); err != nil {
-		return err
+		if flagsErr, ok := err.(*flags.Error); !ok || flagsErr.Type != flags.ErrHelp {
+			return err
+		}
+		os.Exit(0)
 	}
 
 	var tomlCfg map[string]interface{}
@@ -39,14 +42,12 @@ func merge(cfg interface{}, tomlCfg map[string]interface{}) {
 		}
 
 		if fv.String() == "" {
-
 			v, ok := tomlCfg[ft.Tag.Get("toml")]
 			if !ok || v == "-" {
 				def := ft.Tag.Get("def")
 				setValue(fv, def)
 				continue
 			}
-
 			setValue(fv, v)
 		}
 	}
