@@ -325,6 +325,5 @@ func convertAndSet(val string, retval reflect.Value) error {
 			return convertAndSet(val, retval.Elem())
 		}
 	}
-
 	return nil
 }
