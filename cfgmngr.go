@@ -13,18 +13,59 @@ import (
 	flags "github.com/jessevdk/go-flags"
 )
 
-// version 1.0.3
+// version 1.0.5
+// buildDate 2020-11-07
 
 // AppName constant is used to indicate to the Parser function that the TOML's filename
 // should be set after the application's name
 const AppName = "APPNAME"
 
+// Parse fills the received struct with the command line parameters
+// and merges it with the parameters in the TOML file
+// The TOMLFile parameter could be the real fullpath TOML file or the constant AppName in which case the
+// Parse function will be looking for a TOML file named after the application's binary file
+func Parse(cfg interface{}, TOMLFile string) (action string, err error) {
+	action = getAction(&os.Args)
+	if err := doParse(cfg, TOMLFile); err != nil {
+		return "", err
+	}
+	return action, nil
+}
+
 // ParseWithVersion fills the received struct (calling Parse) and also gives support to display a standard version message
 // The TOMLFile parameter could be the real fullpath TOML file or the constant AppName in which case the
 // Parse function will be looking for a TOML file named after the application's binary file
 // There is no manipulation in the version and date information so be sure to pass it in the format the user should see
-func ParseWithVersion(cfg interface{}, TOMLFile string, appVersion string, appBuildDate string, versionFlag *bool) error {
-	if err := Parse(cfg, tomlFileName(TOMLFile)); err != nil {
+func ParseWithVersion(cfg interface{}, TOMLFile string, appVersion string, appBuildDate string, versionFlag *bool) (action string, err error) {
+	action = getAction(&os.Args)
+	if err := doParseWithVersion(cfg, TOMLFile, appVersion, appBuildDate, versionFlag); err != nil {
+		return "", err
+	}
+	return action, nil
+}
+
+// getAction returns the action, if exists, and
+// strips it from the args slice
+func getAction(args *[]string) string {
+	if len(*args) < 2 {
+		return ""
+	}
+	action := (*args)[1]
+
+	if strings.HasPrefix(action, "-") || strings.HasPrefix(action, "/") {
+		return ""
+	}
+
+	for i := 1; i < len(*args)-1; i++ {
+		(*args)[i] = (*args)[1+1]
+	}
+	*args = (*args)[:len(*args)-1]
+
+	return action
+}
+
+func doParseWithVersion(cfg interface{}, TOMLFile string, appVersion string, appBuildDate string, versionFlag *bool) error {
+	if err := doParse(cfg, tomlFileName(TOMLFile)); err != nil {
 		return err
 	}
 
@@ -36,11 +77,7 @@ func ParseWithVersion(cfg interface{}, TOMLFile string, appVersion string, appBu
 	return nil
 }
 
-// Parse fills the received struct with the command line parameters
-// and merges it with the parameters in the TOML file
-// The TOMLFile parameter could be the real fullpath TOML file or the constant AppName in which case the
-// Parse function will be looking for a TOML file named after the application's binary file
-func Parse(cfg interface{}, TOMLFile string) error {
+func doParse(cfg interface{}, TOMLFile string) error {
 	if _, err := flags.Parse(cfg); err != nil {
 		if flagsErr, ok := err.(*flags.Error); !ok || flagsErr.Type != flags.ErrHelp {
 			return err
