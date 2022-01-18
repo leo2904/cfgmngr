@@ -57,7 +57,7 @@ func getAction(args *[]string) string {
 	}
 
 	for i := 1; i < len(*args)-1; i++ {
-		(*args)[i] = (*args)[1+1]
+		(*args)[i] = (*args)[i+1]
 	}
 	*args = (*args)[:len(*args)-1]
 
