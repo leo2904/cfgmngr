@@ -1,4 +1,4 @@
-module leo2904.com/cfgmngr
+module github.com/leo2904.com/cfgmngr
 
 go 1.18
 

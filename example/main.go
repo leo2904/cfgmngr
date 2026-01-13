@@ -20,7 +20,7 @@ type Config struct {
 
 func main() {
 	cfg := Config{}
-	if err := cfgmngr.Parse(&cfg, "cfgmngr.toml"); err != nil {
+	if _, err := cfgmngr.Parse(&cfg, "cfgmngr.toml"); err != nil {
 		log.Fatal(err)
 	}
 
