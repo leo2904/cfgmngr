@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/leo2904.com/cfgmngr"
+	"github.com/leo2904/cfgmngr"
 )
 
 type Config struct {
